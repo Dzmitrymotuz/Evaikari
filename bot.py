@@ -43,7 +43,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('Bot: ', response)
     await update.message.reply_text(response)
 
-async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def error(update: object, context: ContextTypes.DEFAULT_TYPE):
     print(f"Update {update} caused error {context.error}")
 
 if __name__ == '__main__':
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('custom', custom_command))
 
     # Messages
-    app.add_handler(MessageHandler(filters.Text, handle_message))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Errors
     app.add_error_handler(error)
