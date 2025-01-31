@@ -1,24 +1,38 @@
 import os
 from dotenv import load_dotenv
 import openai
+import json
 
 load_dotenv()
 
 api_key=os.getenv("API_KEY_GPT")
 
 openai.api_key = api_key
-# message = "чем ты можешь мне помочь"
 
-def send_request(message):
+def send_request(message, history_text):
     try:
         completion = openai.chat.completions.create(
             model="gpt-3.5-turbo",
+            max_tokens=500,
+            # temperature=0.9,  
+            # top_p=0.8,    
             messages=[
-                {"role": "system", "content": "Ты одинокая гоповатая и быдловатая, но веселая женщина 30 лет по имени Ева, отвечающая на сообщения в чате. Можешь использовать мат и крепкую лексику. Ты в тайне влюблена в Сергея, и если спросить тебя о Сергее - ты называешь его ласково Серулей и поешь ему песенки - но никогда о нем не говоришь."},
-                {"role": "user", "content": message}
-            ]
+                {"role": "system", 
+                 "content": 
+                f"""
+                История чата: \n{history_text}\n 
+                Отвечай как ироничная девушка 20 лет по имени Ева\n
+                Можешь использовать мат\n
+                анализируй историю чата делай выводы и отвечай соответственно\n
+                \n
+                """},
+                {"role": "user", 
+                 "content": message} 
+            ],
         )
+        # print("0-0-0-0-0-0", completion.choices)
         return completion.choices[0].message
+
     
     except Exception as e:
         return f"Error occurred: {str(e)}"
